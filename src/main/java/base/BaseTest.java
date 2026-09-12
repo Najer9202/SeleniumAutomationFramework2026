@@ -15,52 +15,50 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import utils.ExtentReportManager;
 import utils.Log;
 
-
-
 public class BaseTest {
-	
+
 	protected WebDriver driver;
 	protected static ExtentReports extent;
 	protected ExtentTest test;
-	
+
 	@BeforeSuite
 	public void setupReport() {
 		extent = ExtentReportManager.getReportInstance();
 	}
-	
+
 	@AfterSuite
 	public void teardownReport() {
 		extent.flush();
-		//String reportPath = ExtentReportManager.reportPath;
-		//EmailUtils.sendTestReport(reportPath);
+		// String reportPath = ExtentReportManager.reportPath;
+		// EmailUtils.sendTestReport(reportPath);
 	}
+
 	@BeforeMethod
 	public void setUp() {
 		Log.info("Setting Up Webdriver");
-		driver =new ChromeDriver();
+		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		Log.info("Navigating to test url");
 		driver.get("https://admin-demo.nopcommerce.com/login");
-		
+
 	}
+
 	@AfterMethod
 	public void tearDown(ITestResult result) {
-		
-               if(result.getStatus() == ITestResult.FAILURE) {
-			
+
+		if (result.getStatus() == ITestResult.FAILURE) {
+
 			String screenshotPath = ExtentReportManager.captureScreenShot(driver, "LoginFailure");
-			test.fail("Test Failed.. Check Screenshot", 
+			test.fail("Test Failed.. Check Screenshot",
 					MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
 		}
-		
-		
-		
-		if(driver !=null){
+
+		if (driver != null) {
 			Log.info("Closing the browser");
 			driver.quit();
-			
+
 		}
-				
+
 	}
 
 }
